@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - .:/app
+    command: ["poetry", "run", "python", "main.py"]
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+volumes:
+  pgdata:
+    driver: local
